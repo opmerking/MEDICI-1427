@@ -68,7 +68,7 @@ Full methodology and results can be found in the [report](bayesian_inference_rep
 
 - **1427 Catasto:** _[Online Catasto of 1427](https://cds.library.brown.edu/projects/catasto/overview.html)_. Version 1.3. Edited by David Herlihy, Christiane Klapisch-Zuber, R. Burr Litchfield and Anthony Molho. [Machine readable data file based on D. Herlihy and C. Klapisch-Zuber, _Census and Property Survey of Florentine Domains in the Province of Tuscany, 1427-1480._] Florentine Renaissance Resources/STG: Brown University, Providence, R.I., 2002. The data was obtained from Belloc, Drago, Fochesato and Galbiati, [_Data and Code for: Multigenerational Transmission of Wealth: Florence 1403–1480_](https://doi.org/10.3886/E184402V1), licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
 - **1457 Catasto:** _[Online Florentine Catasto of 1457](https://doi.org/10.3886/E192821V1)_, available under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
-- **Mortality:** Morrison, Kirshner and Molho, “[_Epidemics in Renaissance Florence_](https://doi.org/10.2105/AJPH.75.5.528),” American Journal of Public Health 75(5), 528–535, 1985.
+- **Mortality:** Morrison, Kirshner and Molho, [_Epidemics in Renaissance Florence_](https://doi.org/10.2105/AJPH.75.5.528), American Journal of Public Health 75(5), 528–535, 1985.
 - **Forced loans:** Anthony Molho, *Florentine Public Finances in the Early Renaissance, 1400–1433* (1971), pp. 10, 62; Elio Conti, *L’imposta diretta a Firenze nel Quattrocento, 1427–1494* (1984), pp. 81, 83.
 
 Special thanks to the Brown University Digital Humanities team and to the Sapienza Università di Roma team for making the Catasti data publicly available.
