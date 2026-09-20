@@ -2,97 +2,73 @@
 
 **Model for Early Dynamics and Interactions in Commercial Italy**
 
-This repository contains the code for an Agent-Based Model (ABM) of economic behavior in Renaissance Florence. The model simulates economic dynamics at a household-level from 1427 to 1457, drawing on historical datasets from the *Catasto* of 1427 and 1457, along with tax and mortality records, to replicate wealth distribution trends, trade interactions, and demographic shifts over time.
+This repository explores household wealth and inequality in Renaissance Florence. To do this, an agent-based model simulates economic dynamics at a household-level from 1427 to 1457, drawing on historical datasets from the *Catasto* tax records of 1427 and 1457, along with loan and mortality records, to replicate wealth distribution trends, trade interactions, and demographic shifts over time.  Additionally, a Bayesian network has been constructed over the 1427 records to examine household characteristics and taxable wealth.
 
-![Average Household Wealth](output_examples/avg_wealth.png)
+*These analyses were conducted for the Research Methods for Artificial Intelligence and Bayesian Reasoning and Learning courses at the Open University of the Netherlands.*
 
-## Project Overview
+## Agent-based simulation
 
-The simulation:
-- Models over 9,000 historical households from the 1427 *Catasto*
-- Implements economic production, trading behavior, taxation, population changes and debt management
-- Models social shocks such as the impact of wars and epidemics based on historical forced loans and epidemic data to simulate economic instability
-- Tracks wealth distribution, inequality (Gini coefficient), and demographic evolution over 30 simulated years
+The simulation uses Mesa to initialize household agents from 9,780 records in the 1427 *Catasto*. Households produce economic value, trade, manage debt, and pay taxes. The model also includes population changes and household splitting. Historical forced-loan and mortality records are used to represent economic disruption associated with wars and epidemics.
 
-## Requirements
+### Setup
 
-Install dependencies using pip:
+**Simulation dependencies:**
 
 ```bash
 pip install pandas numpy matplotlib seaborn mesa==3.2.0
 ```
 
-## Usage
-
-Run the main simulation:
+Run the simulation from the repository root:
 
 ```bash
 python run.py
 ```
-This will:
 
-1. Load the 1427 Catasto data
-2. Run a 30-year simulation (1427-1457)
-3. Generate three visualization plots:
-    - Gini coefficient evolution
-    - Average household wealth over time
-    - Wealth distribution comparison (1427 vs 1457)
+This runs the simulation for 30 steps (1427-1457) and generates plots of the Gini coefficient evolution (indicating inequality), average household wealth, and simulated versus historical wealth distributions.
 
+### Results
 
-## Structure
+| Measure | Simulated | Historical (1457) |
+|---|---:|---:|
+| Gini coefficient | 0.644 | 0.634 |
+| Population | 32,149 | 31,964 |
+| Households | 7,547 | 7,455 |
 
-```
-florence-abm/
-├── Run.py         # Main simulation runner. Runs 30 timesteps (1 year each), and generates plots.
-├── model.py       # Core model class. Models taxes, economic instability, population changes.
-├── agent.py       # Defines household agents, enables economic value production and trading.
-├── data/          # Historical datasets
-│   ├── Catasto_1427.csv    # 1427 census data (9,780 households)
-│   ├── Catasto_1457.csv    # 1457 census data for validation
-│   ├── forcedloans.txt     # Annual forced loan amounts
-│   └── mortality.txt       # Epidemic mortality rates
-└── README.md
-```
-
-## Key Results
-
-Comparing the results to the final year of the simulation (1457) to the historical data of that year:
-- **Final Gini coefficient**: 0.644 (simulated) vs 0.634 (historical) - 1.6% difference
-- **Population accuracy**: 32,149 (simulated) vs 31,964 (historical)
-- **Household count**: 7,547 (simulated) vs 7,455 (historical)
-- **Robustness**: Consistent results across different random seeds (σ = 0.002)
+Across three random seeds, the final Gini coefficient averaged 0.644 with a standard deviation of 0.002, approximately 1.6% above the historical value. Population dynamics and household splitting were calibrated using historical demographic totals, so their close agreement is expected.
 
 ![Gini coefficient over time](output_examples/Gini.png)
 
-## Model Parameters
+Despite the close Gini coefficient, the simulation substantially overestimated wealth levels. The plot below shows how simulated average household wealth changed over time, alongside war and epidemic years.
 
-| Parameter | Value | Description |
-|-----------|-------|-------------|
-| Simulation period | 30 years | 1427-1457 |
-| Population | 38269 * e^-.0058*(year - 1427) | Simple decay function | 
-| Labor productivity | 40 florins/person/year | Based on unskilled worker wages |
+![Average household wealth over time](output_examples/avg_wealth.png)
+
+The model uses simplified financial rules and an approximate representation of economic shocks. Further calibration to wealth data and comparison against additional historical years would help assess its generalizability.
+
+### Model parameters
+
+| Parameter | Value | Basis |
+|---|---|---|
+| Simulation period | 30 years (1427–1457) | Interval between the two Catasto datasets |
+| Population trajectory | 38,269 × exp(−0.0058084 × (year − 1427)) | Calibrated to historical population totals |
+| Labor productivity | 40 florins/person/year | Based on an estimate of unskilled worker wages |
 | Capital return rate | 6% | Pre-industrial return estimate |
-| Birth rate | .5% | Medieval Italian average |
-| Epidemic penalty | factor 1.5 | Determines instability alongside forced loans |
-| Household split probabilty | Bocche^2 * .000015 | Based on 20 household splits / year avg. |
+| Annual birth rate | 0.5% | Based on the medieval Italian average |
+| Epidemic penalty | 1.5 | Assumed multiplier for the economic instability calculation |
+| Household splitting probability | Household size² × 0.00015 per year | Calibrated to match the 1457 household count |
 
+## Bayesian network analysis
 
-## Sources
+A separate analysis uses a nine-variable Bayesian network to explore relationships between household characteristics and taxable wealth in the 1427 *Catasto*. Conditional probability tables are learned from the data, and inference is performed using lazy propagation in pyAgrum. 
 
-**1427 Catasto:** _Online Catasto of 1427_. Version 1.3. Edited by David Herlihy, Christiane Klapisch-Zuber, R. Burr Litchfield and Anthony Molho. [Machine readable data file based on D. Herlihy and C. Klapisch-Zuber, _Census and Property Survey of Florentine Domains in the Province of Tuscany, 1427-1480._] Florentine Renaissance Resources/STG: Brown University, Providence, R.I., 2002. The 1427 Catasto data is publicly available at: http://cds.library.brown.edu/projects/catasto/overview.html
+Two example queries were used to examine taxable wealth among members of the *Arti Maggiori*, Florence's major trade guilds, and widowed women who owned their homes. The model associates major-guild membership with a shift toward higher taxable wealth.
 
-The **1457 Catasto** is available at: https://doi.org/10.3886/E192821V1. The 1457 Catasto is licensed with Creative Commons: https://creativecommons.org/licenses/by/4.0/
+Full methodology and results can be found in the [report](bayesian_inference_report.pdf). The implementation is in [bayesian_inference_code.ipynb](bayesian_inference_code.ipynb). 
 
-**Mortality data** comes from the historical Florentine Dowry Fund: https://doi.org/10.2105/AJPH.75.5.528. A S Morrison, J Kirshner, and A Molho “_Epidemics in Renaissance Florence._”, American Journal of Public Health 75, no. 5 (May 1, 1985): pp. 528-535.
+## Data sources
 
-**Forced loans** data comes from: Anthony Molho, _Florentine Public Finances in the Early Renaissance, 1400–1433_ (Cambridge, MA, 1971), 10, 62, and Elio Conti, _L’imposta diretta a Firenze nel Quattrocento,
-1427–1494_ (Rome, 1984), 81, 83.
+- **1427 Catasto:** _[Online Catasto of 1427](https://cds.library.brown.edu/projects/catasto/overview.html)_. Version 1.3. Edited by David Herlihy, Christiane Klapisch-Zuber, R. Burr Litchfield and Anthony Molho. [Machine readable data file based on D. Herlihy and C. Klapisch-Zuber, _Census and Property Survey of Florentine Domains in the Province of Tuscany, 1427-1480._] Florentine Renaissance Resources/STG: Brown University, Providence, R.I., 2002.
+- **1457 Catasto:** _[Online Florentine Catasto of 1457](https://doi.org/10.3886/E192821V1)_, available under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
+- **Mortality:** Morrison, Kirshner and Molho, “_Epidemics in Renaissance Florence_,” [American Journal of Public Health](https://doi.org/10.2105/AJPH.75.5.528) 75(5), 528–535, 1985.
+- **Forced loans:** Anthony Molho, *Florentine Public Finances in the Early Renaissance, 1400–1433* (1971), pp. 10, 62; Elio Conti, *L’imposta diretta a Firenze nel Quattrocento, 1427–1494* (1984), pp. 81, 83.
 
-## Author
-
-Fabian Lohmann
-
-FDLohmann@gmail.com
-
-## Acknowledgments
-This project was completed as part of the Research Methods for Artificial Intelligence course at the Open University of the Netherlands. Special thanks to the Brown University Digital Humanities team and to the Sapienza Università di Roma team for making the Catasti data publicly available.
+Special thanks to the Brown University Digital Humanities team and to the Sapienza Università di Roma team for making the Catasti data publicly available.
